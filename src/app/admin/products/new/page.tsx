@@ -1,0 +1,21 @@
+import ProductForm from '@/components/ProductForm'
+import Link from 'next/link'
+
+export default function NewProductPage() {
+  return (
+    <div>
+      <div style={{ marginBottom: '28px' }}>
+        <Link href="/admin" style={{ color: '#888', textDecoration: 'none', fontSize: '0.88rem' }}>
+          ← חזרה לרשימה
+        </Link>
+        <h1 style={{ fontFamily: "'Frank Ruhl Libre', serif", fontSize: '1.8rem', fontWeight: 700, marginTop: '8px' }}>
+          הוספת מוצר חדש
+        </h1>
+      </div>
+
+      <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #e8e4dc', padding: '32px' }}>
+        <ProductForm />
+      </div>
+    </div>
+  )
+}
