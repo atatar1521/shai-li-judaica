@@ -103,6 +103,20 @@ nav {
 
 .btn-cart:hover { background: var(--gold); }
 
+.hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--dark);
+}
+
 /* ─── Hero ─────────────────────────────────────────────────── */
 .hero {
   min-height: 88vh;
@@ -635,8 +649,14 @@ footer ul a:hover { color: var(--gold); }
 
 @media (max-width: 560px) {
   .nav-links         { display: none; }
+  .hamburger         { display: flex; }
+  .btn-cart-label    { display: none; }
+  .nav-user-name     { display: none; }
   .categories-grid   { grid-template-columns: 1fr; }
   .products-grid     { grid-template-columns: 1fr; }
   .footer-grid       { grid-template-columns: 1fr; }
-  .about-stats       { gap: 24px; }
+  .about-stats       { flex-wrap: wrap; gap: 16px; }
+  .trust-inner       { gap: 12px; }
+  .trust-item        { flex: 1 1 40%; }
+  .btn-cart          { padding: 10px 14px; }
 }
