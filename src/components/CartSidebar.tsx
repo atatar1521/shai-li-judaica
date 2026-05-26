@@ -71,16 +71,16 @@ export default function CartSidebar({
       <div style={{
         position: 'fixed',
         top: 0,
-        left: 0,
+        right: 0,
         height: '100vh',
         width: '380px',
         maxWidth: '95vw',
         background: '#fff',
         zIndex: 201,
-        boxShadow: '4px 0 24px rgba(0,0,0,0.12)',
+        boxShadow: '-4px 0 24px rgba(0,0,0,0.12)',
         display: 'flex',
         flexDirection: 'column',
-        transform: open ? 'translateX(0)' : 'translateX(-100%)',
+        transform: open ? 'translateX(0)' : 'translateX(100%)',
         transition: 'transform 0.3s ease',
       }}>
         {/* Header */}

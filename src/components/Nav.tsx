@@ -15,6 +15,7 @@ export default function Nav() {
   const [isAdmin, setIsAdmin] = useState(false)
   const [cartOpen, setCartOpen] = useState(false)
   const [cartCount, setCartCount] = useState(0)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const refreshCartCount = async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -100,7 +101,7 @@ export default function Nav() {
 
           <div className="nav-actions">
             <button className="btn-cart" onClick={() => setCartOpen(true)}>
-              🛒 סל קניות
+              🛒 <span className="btn-cart-label">סל קניות</span>
               {cartCount > 0 && (
                 <span style={{
                   background: '#c9a84c',
@@ -120,7 +121,7 @@ export default function Nav() {
 
             {user ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{ fontSize: '0.85rem', color: '#4a4a4a' }}>
+                <span className="nav-user-name" style={{ fontSize: '0.85rem', color: '#4a4a4a' }}>
                   {user.email?.split('@')[0]}
                 </span>
                 <button onClick={handleSignOut} style={{
@@ -151,11 +152,93 @@ export default function Nav() {
                 כניסה
               </a>
             )}
+
+            {/* Hamburger — only visible on mobile via CSS */}
+            <button
+              className="hamburger"
+              onClick={() => setMenuOpen(true)}
+              aria-label="פתח תפריט"
+            >
+              ☰
+            </button>
           </div>
         </div>
       </nav>
 
       <CartSidebar open={cartOpen} onClose={() => setCartOpen(false)} />
+
+      {/* Mobile menu overlay */}
+      {menuOpen && (
+        <div
+          onClick={() => setMenuOpen(false)}
+          style={{
+            position: 'fixed', inset: 0,
+            background: 'rgba(0,0,0,0.5)',
+            zIndex: 300,
+          }}
+        />
+      )}
+      <div style={{
+        position: 'fixed',
+        top: 0, right: 0,
+        height: '100vh',
+        width: '280px',
+        maxWidth: '85vw',
+        background: '#fff',
+        zIndex: 301,
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '24px',
+        gap: '8px',
+        transform: menuOpen ? 'translateX(0)' : 'translateX(100%)',
+        transition: 'transform 0.3s ease',
+        boxShadow: '-4px 0 24px rgba(0,0,0,0.12)',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <span style={{ fontFamily: "'Frank Ruhl Libre', serif", fontWeight: 700, fontSize: '1.1rem' }}>תפריט</span>
+          <button onClick={() => setMenuOpen(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#888', lineHeight: 1 }}>×</button>
+        </div>
+        {[
+          { href: '#categories', label: 'קטגוריות' },
+          { href: '#products', label: 'מוצרים' },
+          { href: '#about', label: 'עלינו' },
+          { href: '#contact', label: 'צור קשר' },
+        ].map(link => (
+          <a
+            key={link.href}
+            href={link.href}
+            onClick={() => setMenuOpen(false)}
+            style={{
+              display: 'block',
+              padding: '14px 0',
+              borderBottom: '1px solid #f0ece4',
+              textDecoration: 'none',
+              color: '#111',
+              fontSize: '1.05rem',
+              fontWeight: 500,
+            }}
+          >
+            {link.label}
+          </a>
+        ))}
+        {isAdmin && (
+          <a
+            href="/admin"
+            onClick={() => setMenuOpen(false)}
+            style={{
+              display: 'block',
+              padding: '14px 0',
+              borderBottom: '1px solid #f0ece4',
+              textDecoration: 'none',
+              color: 'var(--gold)',
+              fontSize: '1.05rem',
+              fontWeight: 700,
+            }}
+          >
+            ⚙️ ניהול
+          </a>
+        )}
+      </div>
     </>
   )
 }
