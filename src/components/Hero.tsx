@@ -22,20 +22,17 @@ export default function Hero() {
         </div>
 
         <div className="hero-visual">
-          <div className="hero-showcase">
-            <div className="hero-showcase-tag">חדש</div>
-            <div className="hero-showcase-icon" style={{ position: 'relative', zIndex: 1 }}>
-              <Image
-                src="/logo.png"
-                alt="שי לי יודאיקה"
-                width={300}
-                height={300}
-                priority
-                style={{ borderRadius: '20px', objectFit: 'contain' }}
-              />
-            </div>
-            <p>אוסף חנוכה 2025</p>
+          <div className="hero-logo-embed">
+            <Image
+              src="/logo.png"
+              alt="שי לי יודאיקה"
+              width={460}
+              height={460}
+              priority
+              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+            />
           </div>
+          <p className="hero-logo-caption">אוסף חנוכה 2025</p>
         </div>
       </div>
     </section>

@@ -257,58 +257,21 @@ nav {
   align-items: center;
 }
 
-.hero-showcase {
+.hero-logo-embed {
   width: 100%;
   max-width: 460px;
   aspect-ratio: 1;
-  background: rgba(255,255,255,0.03);
-  border-radius: 24px;
-  border: 1px solid rgba(212,170,80,0.35);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  box-shadow:
-    0 20px 80px rgba(0,0,0,0.55),
-    0 0 60px rgba(212,170,80,0.08),
-    inset 0 1px 0 rgba(212,170,80,0.2);
-  position: relative;
-  overflow: hidden;
+  -webkit-mask-image: radial-gradient(ellipse 80% 80% at center, black 35%, transparent 75%);
+  mask-image: radial-gradient(ellipse 80% 80% at center, black 35%, transparent 75%);
 }
 
-.hero-showcase::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(212,170,80,0.08), transparent 60%);
-}
-
-.hero-showcase-icon {
-  font-size: 120px;
-  line-height: 1;
-  position: relative;
-  z-index: 1;
-}
-
-.hero-showcase p {
+.hero-logo-caption {
   font-family: 'Frank Ruhl Libre', serif;
-  font-size: 1.3rem;
-  color: rgba(212,170,80,0.9);
-  position: relative;
-  z-index: 1;
-}
-
-.hero-showcase-tag {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  background: var(--gold);
-  color: white;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 4px 12px;
-  border-radius: 50px;
+  font-size: 1.2rem;
+  color: rgba(212,170,80,0.75);
+  text-align: center;
+  margin-top: -20px;
+  letter-spacing: 0.04em;
 }
 
 /* ─── Trust Bar ────────────────────────────────────────────── */
