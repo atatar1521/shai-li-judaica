@@ -117,6 +117,25 @@ nav {
   color: var(--dark);
 }
 
+.btn-cart-icon {
+  display: none;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  background: var(--dark);
+  color: var(--white);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.nav-user-desktop { display: flex; align-items: center; }
+
+.logo-img { width: 48px; height: 48px; }
+
 /* ─── Hero ─────────────────────────────────────────────────── */
 .hero {
   min-height: 88vh;
@@ -650,13 +669,15 @@ footer ul a:hover { color: var(--gold); }
 @media (max-width: 560px) {
   .nav-links         { display: none; }
   .hamburger         { display: flex; }
-  .btn-cart-label    { display: none; }
-  .nav-user-name     { display: none; }
+  .btn-cart-desktop  { display: none; }
+  .btn-cart-icon     { display: flex; }
+  .nav-user-desktop  { display: none; }
+  .logo-img          { width: 32px !important; height: 32px !important; }
+  .logo              { font-size: 1.1rem; gap: 6px; }
   .categories-grid   { grid-template-columns: 1fr; }
   .products-grid     { grid-template-columns: 1fr; }
   .footer-grid       { grid-template-columns: 1fr; }
   .about-stats       { flex-wrap: wrap; gap: 16px; }
   .trust-inner       { gap: 12px; }
   .trust-item        { flex: 1 1 40%; }
-  .btn-cart          { padding: 10px 14px; }
 }

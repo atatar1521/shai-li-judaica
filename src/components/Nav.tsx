@@ -73,6 +73,7 @@ export default function Nav() {
     <>
       <nav>
         <div className="container nav-inner">
+          {/* Logo — right side (RTL) */}
           <a href="/" className="logo">
             <Image
               src="/logo.png"
@@ -80,11 +81,13 @@ export default function Nav() {
               width={48}
               height={48}
               priority
+              className="logo-img"
               style={{ borderRadius: '8px', objectFit: 'contain' }}
             />
             שי לי <span>יודאיקה</span>
           </a>
 
+          {/* Desktop nav links */}
           <ul className="nav-links">
             <li><a href="#categories">קטגוריות</a></li>
             <li><a href="#products">מוצרים</a></li>
@@ -99,9 +102,11 @@ export default function Nav() {
             )}
           </ul>
 
+          {/* Right-side actions */}
           <div className="nav-actions">
-            <button className="btn-cart" onClick={() => setCartOpen(true)}>
-              🛒 <span className="btn-cart-label">סל קניות</span>
+            {/* Desktop: full cart pill button */}
+            <button className="btn-cart btn-cart-desktop" onClick={() => setCartOpen(true)}>
+              🛒 סל קניות
               {cartCount > 0 && (
                 <span style={{
                   background: '#c9a84c',
@@ -119,12 +124,50 @@ export default function Nav() {
               )}
             </button>
 
-            {user ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span className="nav-user-name" style={{ fontSize: '0.85rem', color: '#4a4a4a' }}>
-                  {user.email?.split('@')[0]}
-                </span>
-                <button onClick={handleSignOut} style={{
+            {/* Mobile: icon-only cart button */}
+            <button className="btn-cart-icon" onClick={() => setCartOpen(true)} aria-label="סל קניות">
+              🛒
+              {cartCount > 0 && (
+                <span style={{
+                  position: 'absolute',
+                  top: '-4px',
+                  right: '-4px',
+                  background: '#c9a84c',
+                  color: '#fff',
+                  borderRadius: '50%',
+                  width: '18px',
+                  height: '18px',
+                  fontSize: '0.65rem',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>{cartCount}</span>
+              )}
+            </button>
+
+            {/* Desktop: user / login */}
+            <div className="nav-user-desktop">
+              {user ? (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <span style={{ fontSize: '0.85rem', color: '#4a4a4a' }}>
+                    {user.email?.split('@')[0]}
+                  </span>
+                  <button onClick={handleSignOut} style={{
+                    background: 'none',
+                    border: '1px solid #e8e4dc',
+                    padding: '8px 16px',
+                    borderRadius: '50px',
+                    fontSize: '0.85rem',
+                    cursor: 'pointer',
+                    color: '#4a4a4a',
+                    fontFamily: 'Heebo, sans-serif',
+                  }}>
+                    יציאה
+                  </button>
+                </div>
+              ) : (
+                <a href="/auth/login" style={{
                   background: 'none',
                   border: '1px solid #e8e4dc',
                   padding: '8px 16px',
@@ -132,28 +175,15 @@ export default function Nav() {
                   fontSize: '0.85rem',
                   cursor: 'pointer',
                   color: '#4a4a4a',
+                  textDecoration: 'none',
                   fontFamily: 'Heebo, sans-serif',
                 }}>
-                  יציאה
-                </button>
-              </div>
-            ) : (
-              <a href="/auth/login" style={{
-                background: 'none',
-                border: '1px solid #e8e4dc',
-                padding: '8px 16px',
-                borderRadius: '50px',
-                fontSize: '0.85rem',
-                cursor: 'pointer',
-                color: '#4a4a4a',
-                textDecoration: 'none',
-                fontFamily: 'Heebo, sans-serif',
-              }}>
-                כניסה
-              </a>
-            )}
+                  כניסה
+                </a>
+              )}
+            </div>
 
-            {/* Hamburger — only visible on mobile via CSS */}
+            {/* Hamburger — mobile only */}
             <button
               className="hamburger"
               onClick={() => setMenuOpen(true)}
@@ -167,7 +197,7 @@ export default function Nav() {
 
       <CartSidebar open={cartOpen} onClose={() => setCartOpen(false)} />
 
-      {/* Mobile menu overlay */}
+      {/* Mobile menu backdrop */}
       {menuOpen && (
         <div
           onClick={() => setMenuOpen(false)}
@@ -178,6 +208,8 @@ export default function Nav() {
           }}
         />
       )}
+
+      {/* Mobile menu panel */}
       <div style={{
         position: 'fixed',
         top: 0, right: 0,
@@ -198,6 +230,7 @@ export default function Nav() {
           <span style={{ fontFamily: "'Frank Ruhl Libre', serif", fontWeight: 700, fontSize: '1.1rem' }}>תפריט</span>
           <button onClick={() => setMenuOpen(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#888', lineHeight: 1 }}>×</button>
         </div>
+
         {[
           { href: '#categories', label: 'קטגוריות' },
           { href: '#products', label: 'מוצרים' },
@@ -221,6 +254,7 @@ export default function Nav() {
             {link.label}
           </a>
         ))}
+
         {isAdmin && (
           <a
             href="/admin"
@@ -238,6 +272,43 @@ export default function Nav() {
             ⚙️ ניהול
           </a>
         )}
+
+        {/* Login / user inside mobile menu */}
+        <div style={{ marginTop: 'auto', paddingTop: '24px', borderTop: '1px solid #f0ece4' }}>
+          {user ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <span style={{ fontSize: '0.88rem', color: '#888' }}>{user.email}</span>
+              <button onClick={() => { handleSignOut(); setMenuOpen(false) }} style={{
+                background: '#111',
+                color: '#fff',
+                border: 'none',
+                padding: '12px',
+                borderRadius: '50px',
+                fontSize: '0.95rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                fontFamily: 'Heebo, sans-serif',
+              }}>
+                יציאה
+              </button>
+            </div>
+          ) : (
+            <a href="/auth/login" onClick={() => setMenuOpen(false)} style={{
+              display: 'block',
+              background: '#111',
+              color: '#fff',
+              textAlign: 'center',
+              padding: '12px',
+              borderRadius: '50px',
+              fontSize: '0.95rem',
+              fontWeight: 600,
+              textDecoration: 'none',
+              fontFamily: 'Heebo, sans-serif',
+            }}>
+              כניסה / הרשמה
+            </a>
+          )}
+        </div>
       </div>
     </>
   )
