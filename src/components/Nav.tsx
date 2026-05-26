@@ -78,11 +78,11 @@ export default function Nav() {
             <Image
               src="/logo.png"
               alt="שי לי יודאיקה"
-              width={48}
-              height={48}
+              width={52}
+              height={52}
               priority
               className="logo-img"
-              style={{ borderRadius: '8px', objectFit: 'contain' }}
+              style={{ objectFit: 'cover' }}
             />
             שי לי <span>יודאיקה</span>
           </a>
