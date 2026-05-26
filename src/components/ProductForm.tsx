@@ -56,21 +56,19 @@ export default function ProductForm({ initial }: { initial?: Partial<ProductData
     setUploading(true)
     setUploadError('')
 
-    const ext = file.name.split('.').pop()
-    const path = `products/${Date.now()}.${ext}`
+    const body = new FormData()
+    body.append('file', file)
 
-    const { error: uploadErr } = await supabase.storage
-      .from('product-images')
-      .upload(path, file, { upsert: true })
+    const res = await fetch('/api/upload-image', { method: 'POST', body })
+    const json = await res.json()
 
-    if (uploadErr) {
-      setUploadError('שגיאה בהעלאה: ' + uploadErr.message)
+    if (!res.ok) {
+      setUploadError('שגיאה בהעלאה: ' + json.error)
       setUploading(false)
       return
     }
 
-    const { data } = supabase.storage.from('product-images').getPublicUrl(path)
-    set('image_url', data.publicUrl)
+    set('image_url', json.url)
     setUploading(false)
   }
 
