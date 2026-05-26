@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 
@@ -21,6 +21,7 @@ export default function ProductForm({ initial }: { initial?: Partial<ProductData
   const router = useRouter()
   const supabase = createClient()
   const isEdit = !!initial?.id
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [form, setForm] = useState<ProductData>({
     name: initial?.name ?? '',
@@ -34,9 +35,56 @@ export default function ProductForm({ initial }: { initial?: Partial<ProductData
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState('')
+  const [dragOver, setDragOver] = useState(false)
+  const [showUrlInput, setShowUrlInput] = useState(false)
 
   const set = (key: keyof ProductData, value: string | boolean) =>
     setForm(f => ({ ...f, [key]: value }))
+
+  const uploadFile = async (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      setUploadError('יש לבחור קובץ תמונה בלבד')
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError('גודל הקובץ המקסימלי הוא 5MB')
+      return
+    }
+
+    setUploading(true)
+    setUploadError('')
+
+    const ext = file.name.split('.').pop()
+    const path = `products/${Date.now()}.${ext}`
+
+    const { error: uploadErr } = await supabase.storage
+      .from('product-images')
+      .upload(path, file, { upsert: true })
+
+    if (uploadErr) {
+      setUploadError('שגיאה בהעלאה: ' + uploadErr.message)
+      setUploading(false)
+      return
+    }
+
+    const { data } = supabase.storage.from('product-images').getPublicUrl(path)
+    set('image_url', data.publicUrl)
+    setUploading(false)
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) uploadFile(file)
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setDragOver(false)
+    const file = e.dataTransfer.files?.[0]
+    if (file) uploadFile(file)
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -118,17 +166,117 @@ export default function ProductForm({ initial }: { initial?: Partial<ProductData
           </div>
         </div>
 
-        {/* Image URL */}
+        {/* Image upload */}
         <div>
-          <label style={labelStyle}>קישור לתמונה (URL)</label>
-          <input value={form.image_url} onChange={e => set('image_url', e.target.value)}
-            placeholder="https://..." style={inputStyle} />
-          {form.image_url && (
-            <div style={{ marginTop: '8px' }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={form.image_url} alt="preview"
-                style={{ height: '80px', borderRadius: '8px', objectFit: 'cover', border: '1px solid #e8e4dc' }} />
-            </div>
+          <label style={labelStyle}>תמונת המוצר</label>
+
+          {/* Drop zone */}
+          <div
+            onClick={() => !uploading && fileInputRef.current?.click()}
+            onDragOver={e => { e.preventDefault(); setDragOver(true) }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={handleDrop}
+            style={{
+              border: `2px dashed ${dragOver ? '#c9a84c' : '#e8e4dc'}`,
+              borderRadius: '12px',
+              padding: '24px 16px',
+              textAlign: 'center',
+              cursor: uploading ? 'default' : 'pointer',
+              background: dragOver ? 'rgba(201,168,76,0.06)' : '#fafaf8',
+              transition: 'all 0.2s ease',
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
+            {form.image_url ? (
+              /* Preview */
+              <div style={{ position: 'relative', display: 'inline-block' }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={form.image_url}
+                  alt="preview"
+                  style={{ height: '140px', maxWidth: '100%', borderRadius: '8px', objectFit: 'cover' }}
+                />
+                <button
+                  type="button"
+                  onClick={e => { e.stopPropagation(); set('image_url', '') }}
+                  style={{
+                    position: 'absolute', top: '-8px', right: '-8px',
+                    background: '#fff', border: '1px solid #e8e4dc',
+                    borderRadius: '50%', width: '26px', height: '26px',
+                    fontSize: '0.85rem', cursor: 'pointer', lineHeight: 1,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    boxShadow: '0 1px 4px rgba(0,0,0,0.12)',
+                  }}
+                >×</button>
+                <p style={{ marginTop: '10px', fontSize: '0.78rem', color: '#aaa' }}>
+                  לחצו או גררו תמונה חדשה להחלפה
+                </p>
+              </div>
+            ) : uploading ? (
+              <div>
+                <div style={{ fontSize: '2rem', marginBottom: '8px' }}>⏳</div>
+                <p style={{ color: '#888', fontSize: '0.9rem' }}>מעלה תמונה...</p>
+              </div>
+            ) : (
+              <div>
+                <div style={{ fontSize: '2.5rem', marginBottom: '8px' }}>📁</div>
+                <p style={{ fontWeight: 600, color: '#333', marginBottom: '4px' }}>
+                  גררו תמונה לכאן
+                </p>
+                <p style={{ fontSize: '0.85rem', color: '#888', marginBottom: '12px' }}>
+                  או לחצו לבחירת קובץ מהמכשיר
+                </p>
+                <span style={{
+                  display: 'inline-block',
+                  background: '#111', color: '#fff',
+                  padding: '8px 20px', borderRadius: '50px',
+                  fontSize: '0.85rem', fontWeight: 600,
+                }}>
+                  בחרו קובץ
+                </span>
+                <p style={{ marginTop: '10px', fontSize: '0.75rem', color: '#bbb' }}>
+                  JPG, PNG, WEBP — עד 5MB
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Hidden file input — accepts images, opens gallery/camera on mobile */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            style={{ display: 'none' }}
+            onChange={handleFileChange}
+          />
+
+          {uploadError && (
+            <p style={{ color: '#c62828', fontSize: '0.82rem', marginTop: '6px' }}>{uploadError}</p>
+          )}
+
+          {/* URL fallback toggle */}
+          <button
+            type="button"
+            onClick={() => setShowUrlInput(v => !v)}
+            style={{
+              marginTop: '10px',
+              background: 'none', border: 'none',
+              color: '#c9a84c', fontSize: '0.82rem',
+              cursor: 'pointer', textDecoration: 'underline',
+              fontFamily: 'Heebo, sans-serif', padding: 0,
+            }}
+          >
+            {showUrlInput ? 'הסתר' : 'או הזינו קישור URL לתמונה'}
+          </button>
+
+          {showUrlInput && (
+            <input
+              value={form.image_url}
+              onChange={e => set('image_url', e.target.value)}
+              placeholder="https://..."
+              style={{ ...inputStyle, marginTop: '8px' }}
+            />
           )}
         </div>
 
@@ -136,12 +284,12 @@ export default function ProductForm({ initial }: { initial?: Partial<ProductData
 
         {/* Actions */}
         <div style={{ display: 'flex', gap: '12px', paddingTop: '8px' }}>
-          <button type="submit" disabled={loading} style={{
-            background: loading ? '#888' : '#c9a84c',
+          <button type="submit" disabled={loading || uploading} style={{
+            background: (loading || uploading) ? '#888' : '#c9a84c',
             color: '#fff', border: 'none',
             padding: '13px 32px', borderRadius: '50px',
             fontSize: '1rem', fontWeight: 700,
-            cursor: loading ? 'not-allowed' : 'pointer',
+            cursor: (loading || uploading) ? 'not-allowed' : 'pointer',
             fontFamily: 'Heebo, sans-serif',
           }}>
             {loading ? '...' : isEdit ? 'שמור שינויים' : 'הוסף מוצר'}
