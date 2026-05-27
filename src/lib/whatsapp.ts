@@ -5,7 +5,8 @@ export function buildWhatsAppUrl(items: CartItem[]): string {
 
   const lines = items.map(i => {
     const lineTotal = (i.product.price * i.quantity).toLocaleString('he-IL')
-    return `🔹 ${i.product.name} × ${i.quantity} — ₪${lineTotal}`
+    const unit = i.quantity === 1 ? 'יחידה' : 'יחידות'
+    return `${i.product.name} — ₪${lineTotal} (${i.quantity} ${unit})`
   })
 
   const total = items
@@ -13,14 +14,14 @@ export function buildWhatsAppUrl(items: CartItem[]): string {
     .toLocaleString('he-IL')
 
   const message = [
-    'שלום! 👋',
+    'שלום!',
     'אשמח לרכוש את הפריטים הבאים מ"שי לי יודאיקה":',
     '',
     ...lines,
     '',
-    `💰 סה"כ: ₪${total}`,
+    `סה"כ: ₪${total}`,
     '',
-    'אשמח לתאם את ההזמנה, ניתן ליצור איתי קשר? 🙏',
+    'אשמח לתאם את ההזמנה, ניתן ליצור איתי קשר?',
   ].join('\n')
 
   return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
