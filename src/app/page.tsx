@@ -1,9 +1,9 @@
-import Link from 'next/link'
 import Nav from '@/components/Nav'
 import Hero from '@/components/Hero'
 import TrustBar from '@/components/TrustBar'
 import Footer from '@/components/Footer'
 import ProductCard from '@/components/ProductCard'
+import CategoriesSection from '@/components/CategoriesSection'
 import { createClient } from '@/lib/supabase/server'
 
 export const revalidate = 60
@@ -30,18 +30,7 @@ export default async function Home() {
             <h2>מה תרצו למצוא?</h2>
             <p>מגוון רחב של פריטי יודאיקה לכל צורך ואירוע</p>
           </div>
-          <div className="categories-grid">
-            {categories?.map(cat => (
-              <Link
-                key={cat.name}
-                href={`/shop?cat=${encodeURIComponent(cat.name)}`}
-                className="category-card"
-              >
-                <h3>{cat.name}</h3>
-                <span className="category-card-arrow">←</span>
-              </Link>
-            ))}
-          </div>
+          <CategoriesSection categories={categories ?? []} />
         </div>
       </section>
 

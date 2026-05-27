@@ -36,6 +36,15 @@ jest.mock('@/components/ProductCard', () => ({
   ),
 }))
 
+jest.mock('@/components/CategoriesSection', () => ({
+  __esModule: true,
+  default: ({ categories }: { categories: { name: string }[] }) => (
+    <div data-testid="categories-section">
+      {categories.map(c => <span key={c.name}>{c.name}</span>)}
+    </div>
+  ),
+}))
+
 function setupMocks(products: object[] | null, categories: { name: string }[] | null) {
   mockFrom.mockImplementation((table: string) => {
     if (table === 'categories') {
