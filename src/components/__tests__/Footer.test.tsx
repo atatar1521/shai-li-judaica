@@ -23,7 +23,7 @@ describe('Footer', () => {
   it('renders contact section with phone and email', () => {
     expect(screen.getByText('צרו קשר')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /050/ })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /info@/ })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Tair060215@gmail\.com/ })).toBeInTheDocument()
   })
 
   it('renders copyright footer', () => {
