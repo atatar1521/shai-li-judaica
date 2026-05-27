@@ -130,7 +130,7 @@ describe('Home page', () => {
     const result = await Home()
     render(result as React.ReactElement)
     const waLink = screen.getByRole('link', { name: /WhatsApp/i })
-    expect(waLink).toHaveAttribute('href', 'https://wa.me/972540000000')
+    expect(waLink).toHaveAttribute('href', 'https://wa.me/+972540000000')
   })
 
   it('CTA phone link uses tel: protocol with NEXT_PUBLIC_WHATSAPP_PHONE', async () => {

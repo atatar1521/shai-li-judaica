@@ -93,7 +93,7 @@ export default async function Home() {
         <p>צרו איתנו קשר ונמצא יחד את הפריט המושלם עבורכם</p>
         <div className="contact-buttons">
           <a
-            href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_PHONE}`}
+            href={`https://wa.me/+${process.env.NEXT_PUBLIC_WHATSAPP_PHONE}`}
             className="contact-btn"
             target="_blank"
             rel="noreferrer"

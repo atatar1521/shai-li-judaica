@@ -6,7 +6,7 @@ function formatPhone(raw: string | undefined): string {
 
 export default function Footer() {
   const phone = process.env.NEXT_PUBLIC_WHATSAPP_PHONE
-  const waLink = `https://wa.me/${phone}`
+  const waLink = `https://wa.me/+${phone}`
   const telLink = `tel:+${phone}`
   const displayPhone = formatPhone(phone)
 
