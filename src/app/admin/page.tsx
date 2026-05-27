@@ -49,7 +49,8 @@ export default async function AdminPage() {
             </Link>
           </div>
         ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+          <table style={{ width: '100%', minWidth: '640px', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: '#fafaf8', borderBottom: '1px solid #e8e4dc' }}>
                 <th style={thStyle}>מוצר</th>
@@ -113,6 +114,7 @@ export default async function AdminPage() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
     </div>
