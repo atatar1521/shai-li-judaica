@@ -14,8 +14,8 @@ export function buildWhatsAppUrl(items: CartItem[]): string {
     .toLocaleString('he-IL')
 
   const message = [
-    'שלום!',
-    'אשמח לרכוש את הפריטים הבאים מ"שי לי יודאיקה":',
+    'שלום! הגעתי מהאתר שי לי יודאיקה',
+    'אשמח לרכוש את הפריטים הבאים:',
     '',
     ...lines,
     '',
