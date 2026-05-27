@@ -10,6 +10,7 @@ const config = {
         '<rootDir>/src/app/admin/products/__tests__/*.test.tsx',
         '<rootDir>/src/app/auth/login/__tests__/*.test.tsx',
         '<rootDir>/src/app/__tests__/*.test.tsx',
+        '<rootDir>/src/app/shop/__tests__/*.test.tsx',
       ],
       transform: {
         '^.+\\.(ts|tsx)$': ['@swc/jest', {
