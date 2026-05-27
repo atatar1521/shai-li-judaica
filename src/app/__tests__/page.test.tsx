@@ -114,11 +114,39 @@ describe('Home page', () => {
     expect(screen.getByText(/שנים של אהבה/)).toBeInTheDocument()
   })
 
-  it('renders the CTA contact section', async () => {
+  it('renders the CTA contact section with 3 contact buttons', async () => {
     setupMocks([], [])
     const result = await Home()
     render(result as React.ReactElement)
     expect(screen.getByText(/מחפשים מתנה מיוחדת/)).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /צרו קשר/ })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /WhatsApp/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /אימייל/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /טלפון/i })).toBeInTheDocument()
+  })
+
+  it('CTA WhatsApp link uses NEXT_PUBLIC_WHATSAPP_PHONE env var', async () => {
+    process.env.NEXT_PUBLIC_WHATSAPP_PHONE = '972540000000'
+    setupMocks([], [])
+    const result = await Home()
+    render(result as React.ReactElement)
+    const waLink = screen.getByRole('link', { name: /WhatsApp/i })
+    expect(waLink).toHaveAttribute('href', 'https://wa.me/972540000000')
+  })
+
+  it('CTA phone link uses tel: protocol with NEXT_PUBLIC_WHATSAPP_PHONE', async () => {
+    process.env.NEXT_PUBLIC_WHATSAPP_PHONE = '972540000000'
+    setupMocks([], [])
+    const result = await Home()
+    render(result as React.ReactElement)
+    const telLink = screen.getByRole('link', { name: /טלפון/i })
+    expect(telLink).toHaveAttribute('href', 'tel:+972540000000')
+  })
+
+  it('CTA email link uses mailto:', async () => {
+    setupMocks([], [])
+    const result = await Home()
+    render(result as React.ReactElement)
+    const mailLink = screen.getByRole('link', { name: /אימייל/i })
+    expect(mailLink).toHaveAttribute('href', 'mailto:Tair060215@gmail.com')
   })
 })

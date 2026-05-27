@@ -2,7 +2,10 @@ import { render, screen } from '@testing-library/react'
 import Footer from '../Footer'
 
 describe('Footer', () => {
-  beforeEach(() => render(<Footer />))
+  beforeEach(() => {
+    process.env.NEXT_PUBLIC_WHATSAPP_PHONE = '972542095195'
+    render(<Footer />)
+  })
 
   it('renders brand name', () => {
     expect(screen.getByText(/שי לי/, { selector: 'a' })).toBeInTheDocument()
@@ -20,10 +23,19 @@ describe('Footer', () => {
     expect(screen.getByText(/משלוחים/)).toBeInTheDocument()
   })
 
-  it('renders contact section with phone and email', () => {
+  it('renders contact section with real phone number from env', () => {
     expect(screen.getByText('צרו קשר')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /050/ })).toBeInTheDocument()
+    const phoneLink = screen.getByRole('link', { name: /054/ })
+    expect(phoneLink).toHaveAttribute('href', 'tel:+972542095195')
+  })
+
+  it('renders contact email', () => {
     expect(screen.getByRole('link', { name: /Tair060215@gmail\.com/ })).toBeInTheDocument()
+  })
+
+  it('renders WhatsApp link pointing to wa.me with correct number', () => {
+    const waLink = screen.getByRole('link', { name: 'WhatsApp' })
+    expect(waLink).toHaveAttribute('href', 'https://wa.me/972542095195')
   })
 
   it('renders copyright footer', () => {
