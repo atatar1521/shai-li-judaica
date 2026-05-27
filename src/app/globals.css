@@ -367,6 +367,11 @@ nav {
   gap: 16px;
 }
 
+/* hidden always (index 6+) */
+.cat--hidden { display: none; }
+/* cards 4-5: desktop only, hidden on mobile */
+.cat--desktop-only { display: flex; }
+
 .category-card {
   background: var(--white);
   border: 1px solid var(--border);
@@ -425,6 +430,121 @@ nav {
   color: var(--dark);
   transition: color 0.25s ease;
   line-height: 1.3;
+}
+
+/* ─── Categories Show All ──────────────────────────────────── */
+.categories-show-all {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.categories-show-all-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 32px;
+  border: 1.5px solid var(--border);
+  border-radius: 50px;
+  background: transparent;
+  color: var(--dark);
+  font-family: 'Heebo', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.categories-show-all-btn:hover {
+  background: var(--dark);
+  border-color: var(--dark);
+  color: var(--gold);
+}
+
+.categories-show-all-arrow {
+  color: var(--gold);
+  font-size: 1rem;
+  transition: transform 0.22s ease;
+}
+
+.categories-show-all-btn:hover .categories-show-all-arrow {
+  transform: translateX(-4px);
+}
+
+/* ─── Categories Drawer ────────────────────────────────────── */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 17, 16, 0.55);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.drawer {
+  width: 100%;
+  background: var(--bg);
+  border-radius: 20px 20px 0 0;
+  padding: 12px 24px 40px;
+  max-height: 85vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+.drawer-handle {
+  width: 40px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 0 auto 20px;
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.drawer-header h3 {
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--dark);
+}
+
+.drawer-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--mid);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.drawer-close:hover {
+  background: var(--dark);
+  border-color: var(--dark);
+  color: var(--white);
+}
+
+.drawer-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
 }
 
 /* ─── Products ─────────────────────────────────────────────── */
@@ -709,6 +829,7 @@ footer ul a:hover { color: var(--gold); }
   .about-visual      { display: none; }
   .footer-grid       { grid-template-columns: 1fr 1fr; }
   .trust-inner       { gap: 28px; }
+  .cat--desktop-only { display: none; }
 }
 
 @media (max-width: 560px) {
@@ -727,6 +848,14 @@ footer ul a:hover { color: var(--gold); }
   .trust-item        { flex: 1 1 40%; }
   .contact-buttons   { flex-direction: column; align-items: center; }
   .contact-btn       { width: 220px; justify-content: center; }
+}
+
+@media (min-width: 901px) {
+  .drawer {
+    max-width: 640px;
+    margin: 0 auto;
+    border-radius: 20px 20px 0 0;
+  }
 }
 
 /* ─── Shop Page ────────────────────────────────────────────── */
