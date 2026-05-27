@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import Nav from '@/components/Nav'
 import Hero from '@/components/Hero'
 import TrustBar from '@/components/TrustBar'
@@ -5,21 +6,15 @@ import Footer from '@/components/Footer'
 import ProductCard from '@/components/ProductCard'
 import { createClient } from '@/lib/supabase/server'
 
-export const revalidate = 60 // revalidate every 60 seconds
+export const revalidate = 60
 
 export default async function Home() {
   const supabase = await createClient()
 
-  const { data: products } = await supabase
-    .from('products')
-    .select('*')
-    .eq('in_stock', true)
-    .order('created_at', { ascending: false })
-
-  const { data: categories } = await supabase
-    .from('categories')
-    .select('name')
-    .order('display_order')
+  const [{ data: products }, { data: categories }] = await Promise.all([
+    supabase.from('products').select('*').eq('in_stock', true).order('created_at', { ascending: false }),
+    supabase.from('categories').select('name').order('display_order'),
+  ])
 
   return (
     <>
@@ -37,9 +32,14 @@ export default async function Home() {
           </div>
           <div className="categories-grid">
             {categories?.map(cat => (
-              <a key={cat.name} href="#products" className="category-card">
+              <Link
+                key={cat.name}
+                href={`/shop?cat=${encodeURIComponent(cat.name)}`}
+                className="category-card"
+              >
                 <h3>{cat.name}</h3>
-              </a>
+                <span className="category-card-arrow">←</span>
+              </Link>
             ))}
           </div>
         </div>
