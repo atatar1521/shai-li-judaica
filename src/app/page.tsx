@@ -91,7 +91,7 @@ export default async function Home() {
       <section className="cta-banner" id="contact">
         <h2>מחפשים מתנה מיוחדת?</h2>
         <p>צרו איתנו קשר ונמצא יחד את הפריט המושלם עבורכם</p>
-        <a href="mailto:info@shailiyudaika.co.il" className="btn-gold">צרו קשר עכשיו</a>
+        <a href="mailto:Tair060215@gmail.com" className="btn-gold">צרו קשר עכשיו</a>
       </section>
 
       <Footer />

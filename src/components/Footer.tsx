@@ -32,7 +32,7 @@ export default function Footer() {
             <h4>צרו קשר</h4>
             <ul>
               <li><a href="tel:+972501234567">050-123-4567</a></li>
-              <li><a href="mailto:info@shailiyudaika.co.il">info@shailiyudaika.co.il</a></li>
+              <li><a href="mailto:Tair060215@gmail.com">Tair060215@gmail.com</a></li>
               <li><a href="#">WhatsApp</a></li>
             </ul>
           </div>
