@@ -588,6 +588,39 @@ nav {
   position: relative;
 }
 
+/* ─── Contact Buttons ──────────────────────────────────────── */
+.contact-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.contact-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 13px 26px;
+  border: 1.5px solid rgba(255,255,255,0.22);
+  border-radius: 50px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+  font-family: 'Heebo', sans-serif;
+  transition: all 0.25s ease;
+  background: rgba(255,255,255,0.06);
+}
+
+.contact-btn:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--dark);
+}
+
+.contact-btn svg { flex-shrink: 0; }
+
 .btn-gold {
   background: var(--gold);
   color: var(--dark);
@@ -692,6 +725,8 @@ footer ul a:hover { color: var(--gold); }
   .about-stats       { flex-wrap: wrap; gap: 16px; }
   .trust-inner       { gap: 12px; }
   .trust-item        { flex: 1 1 40%; }
+  .contact-buttons   { flex-direction: column; align-items: center; }
+  .contact-btn       { width: 220px; justify-content: center; }
 }
 
 /* ─── Shop Page ────────────────────────────────────────────── */
