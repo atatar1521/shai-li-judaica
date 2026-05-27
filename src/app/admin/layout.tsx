@@ -34,6 +34,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </div>
         <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
           <a href="/admin" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.88rem' }}>מוצרים</a>
+          <a href="/admin/categories" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.88rem' }}>קטגוריות</a>
           <a href="/" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.88rem' }}>← לחנות</a>
         </div>
       </div>

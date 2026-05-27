@@ -42,6 +42,12 @@ describe('ProductForm — new product', () => {
     expect(screen.getByPlaceholderText(/תיאור קצר/)).toBeInTheDocument()
   })
 
+  it('renders passed-in category options in the select', () => {
+    render(<ProductForm categories={['חנוכיות', 'מזוזות']} />)
+    expect(screen.getByRole('option', { name: 'חנוכיות' })).toBeInTheDocument()
+    expect(screen.getByRole('option', { name: 'מזוזות' })).toBeInTheDocument()
+  })
+
   it('renders the add-product submit button', () => {
     render(<ProductForm />)
     expect(screen.getByRole('button', { name: 'הוסף מוצר' })).toBeInTheDocument()

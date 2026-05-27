@@ -16,14 +16,10 @@ export default async function Home() {
     .eq('in_stock', true)
     .order('created_at', { ascending: false })
 
-  const categories = [
-    { icon: '🕎', name: 'חנוכיות', desc: 'חנוכיות מסורתיות ועיצוביות לכל טעם ותקציב', slug: 'חנוכיות' },
-    { icon: '📜', name: 'מזוזות', desc: 'מזוזות כשרות בעיצובים מגוונים לכל דלת בביתכם', slug: 'מזוזות' },
-    { icon: '🪬', name: 'תכשיטים', desc: 'חמסות, שרשראות וצמידים עם סמלים יהודיים', slug: 'תכשיטים' },
-    { icon: '🕯️', name: 'שבת וחגים', desc: 'מנורות שבת, גביעי קידוש, מכלי בשמים ועוד', slug: 'שבת וחגים' },
-    { icon: '🖼️', name: 'אמנות לבית', desc: 'תמונות, מפות ישראל ויצירות אמנות יהודית לבית', slug: 'אמנות לבית' },
-    { icon: '🎁', name: 'מתנות מיוחדות', desc: 'סטים מאורזים לבר מצווה, חתונה ואירועים מיוחדים', slug: 'מתנות' },
-  ]
+  const { data: categories } = await supabase
+    .from('categories')
+    .select('name')
+    .order('display_order')
 
   return (
     <>
@@ -40,11 +36,9 @@ export default async function Home() {
             <p>מגוון רחב של פריטי יודאיקה לכל צורך ואירוע</p>
           </div>
           <div className="categories-grid">
-            {categories.map(cat => (
-              <a key={cat.slug} href={`#products`} className="category-card">
-                <span className="cat-icon">{cat.icon}</span>
+            {categories?.map(cat => (
+              <a key={cat.name} href="#products" className="category-card">
                 <h3>{cat.name}</h3>
-                <p>{cat.desc}</p>
               </a>
             ))}
           </div>

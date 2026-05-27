@@ -20,6 +20,9 @@ export default async function EditProductPage({
 
   if (!product) notFound()
 
+  const { data: cats } = await supabase.from('categories').select('name').order('display_order')
+  const categories = cats?.map(c => c.name) ?? []
+
   return (
     <div>
       <div style={{ marginBottom: '28px' }}>
@@ -33,16 +36,19 @@ export default async function EditProductPage({
       </div>
 
       <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #e8e4dc', padding: '32px' }}>
-        <ProductForm initial={{
-          id: product.id,
-          name: product.name,
-          description: product.description ?? '',
-          price: String(product.price),
-          category: product.category ?? '',
-          badge: product.badge ?? '',
-          in_stock: product.in_stock,
-          image_url: product.image_url ?? '',
-        }} />
+        <ProductForm
+          categories={categories}
+          initial={{
+            id: product.id,
+            name: product.name,
+            description: product.description ?? '',
+            price: String(product.price),
+            category: product.category ?? '',
+            badge: product.badge ?? '',
+            in_stock: product.in_stock,
+            image_url: product.image_url ?? '',
+          }}
+        />
       </div>
     </div>
   )
