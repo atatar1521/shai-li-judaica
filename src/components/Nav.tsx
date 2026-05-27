@@ -82,10 +82,10 @@ export default function Nav() {
 
           {/* Desktop nav links */}
           <ul className="nav-links">
-            <li><a href="#categories">קטגוריות</a></li>
-            <li><a href="#products">מוצרים</a></li>
-            <li><a href="#about">עלינו</a></li>
-            <li><a href="#contact">צור קשר</a></li>
+            <li><a href="/#categories">קטגוריות</a></li>
+            <li><a href="/#products">מוצרים</a></li>
+            <li><a href="/#about">עלינו</a></li>
+            <li><a href="/#contact">צור קשר</a></li>
             {isAdmin && (
               <li>
                 <a href="/admin" style={{ color: 'var(--gold)', fontWeight: 700 }}>
@@ -174,10 +174,10 @@ export default function Nav() {
         </div>
 
         {[
-          { href: '#categories', label: 'קטגוריות' },
-          { href: '#products', label: 'מוצרים' },
-          { href: '#about', label: 'עלינו' },
-          { href: '#contact', label: 'צור קשר' },
+          { href: '/#categories', label: 'קטגוריות' },
+          { href: '/#products', label: 'מוצרים' },
+          { href: '/#about', label: 'עלינו' },
+          { href: '/#contact', label: 'צור קשר' },
         ].map(link => (
           <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)} style={{
             display: 'block', padding: '14px 0', borderBottom: '1px solid #f0ece4',
