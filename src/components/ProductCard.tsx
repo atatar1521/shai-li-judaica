@@ -2,8 +2,6 @@
 
 import { useState } from 'react'
 import { addToCart } from '@/lib/cart'
-import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 
 type Product = {
   id: string
@@ -19,26 +17,19 @@ type Product = {
 export default function ProductCard({ product }: { product: Product }) {
   const [adding, setAdding] = useState(false)
   const [added, setAdded] = useState(false)
-  const router = useRouter()
 
   const handleAddToCart = async () => {
-    const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-
-    if (!user) {
-      router.push('/auth/login')
-      return
-    }
-
     setAdding(true)
-    const { error } = await addToCart(product.id)
+    await addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image_url: product.image_url,
+      badge: product.badge,
+    })
     setAdding(false)
-
-    if (!error) {
-      setAdded(true)
-      setTimeout(() => setAdded(false), 2000)
-      window.dispatchEvent(new Event('cart-updated'))
-    }
+    setAdded(true)
+    setTimeout(() => setAdded(false), 2000)
   }
 
   return (
