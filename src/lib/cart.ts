@@ -1,5 +1,3 @@
-import { createClient } from '@/lib/supabase/client'
-
 export type CartItem = {
   id: string
   quantity: number
@@ -12,63 +10,46 @@ export type CartItem = {
   }
 }
 
-export async function getCart(): Promise<CartItem[]> {
-  const supabase = createClient()
-  const { data } = await supabase
-    .from('basket_items')
-    .select(`
-      id,
-      quantity,
-      product:products (
-        id,
-        name,
-        price,
-        image_url,
-        badge
-      )
-    `)
-    .order('created_at', { ascending: true })
+const CART_KEY = 'cart'
 
-  return (data as unknown as CartItem[]) ?? []
+function readCart(): CartItem[] {
+  if (typeof window === 'undefined') return []
+  try {
+    return JSON.parse(localStorage.getItem(CART_KEY) ?? '[]')
+  } catch {
+    return []
+  }
 }
 
-export async function addToCart(productId: string) {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'not_authenticated' }
+function saveCart(items: CartItem[]) {
+  localStorage.setItem(CART_KEY, JSON.stringify(items))
+  window.dispatchEvent(new Event('cart-updated'))
+}
 
-  // Check if already in cart
-  const { data: existing } = await supabase
-    .from('basket_items')
-    .select('id, quantity')
-    .eq('user_id', user.id)
-    .eq('product_id', productId)
-    .single()
+export async function getCart(): Promise<CartItem[]> {
+  return readCart()
+}
 
+export async function addToCart(product: CartItem['product']) {
+  const items = readCart()
+  const existing = items.find(i => i.id === product.id)
   if (existing) {
-    await supabase
-      .from('basket_items')
-      .update({ quantity: existing.quantity + 1 })
-      .eq('id', existing.id)
+    existing.quantity += 1
   } else {
-    await supabase
-      .from('basket_items')
-      .insert({ user_id: user.id, product_id: productId, quantity: 1 })
+    items.push({ id: product.id, quantity: 1, product })
   }
-
+  saveCart(items)
   return { error: null }
 }
 
-export async function removeFromCart(itemId: string) {
-  const supabase = createClient()
-  await supabase.from('basket_items').delete().eq('id', itemId)
+export async function removeFromCart(productId: string) {
+  saveCart(readCart().filter(i => i.id !== productId))
 }
 
-export async function updateQuantity(itemId: string, quantity: number) {
-  const supabase = createClient()
+export async function updateQuantity(productId: string, quantity: number) {
   if (quantity <= 0) {
-    await supabase.from('basket_items').delete().eq('id', itemId)
+    removeFromCart(productId)
   } else {
-    await supabase.from('basket_items').update({ quantity }).eq('id', itemId)
+    saveCart(readCart().map(i => i.id === productId ? { ...i, quantity } : i))
   }
 }

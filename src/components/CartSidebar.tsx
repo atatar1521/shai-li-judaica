@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { getCart, removeFromCart, updateQuantity, type CartItem } from '@/lib/cart'
 import { buildWhatsAppUrl } from '@/lib/whatsapp'
-import { createClient } from '@/lib/supabase/client'
 
 export default function CartSidebar({
   open,
@@ -13,19 +12,9 @@ export default function CartSidebar({
   onClose: () => void
 }) {
   const [items, setItems] = useState<CartItem[]>([])
-  const [loading, setLoading] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   const loadCart = async () => {
-    setLoading(true)
-    const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    setIsLoggedIn(!!user)
-    if (user) {
-      const data = await getCart()
-      setItems(data)
-    }
-    setLoading(false)
+    setItems(await getCart())
   }
 
   useEffect(() => {
@@ -103,18 +92,7 @@ export default function CartSidebar({
 
         {/* Content */}
         <div style={{ flex: 1, overflowY: 'auto', padding: '16px 24px' }}>
-          {!isLoggedIn ? (
-            <div style={{ textAlign: 'center', paddingTop: '40px' }}>
-              <p style={{ color: '#888', marginBottom: '16px' }}>יש להתחבר כדי לצפות בסל</p>
-              <a href="/auth/login" style={{
-                background: '#1a1a1a', color: '#fff',
-                padding: '10px 24px', borderRadius: '50px',
-                textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600,
-              }}>כניסה</a>
-            </div>
-          ) : loading ? (
-            <p style={{ color: '#888', textAlign: 'center', paddingTop: '40px' }}>טוען...</p>
-          ) : items.length === 0 ? (
+          {items.length === 0 ? (
             <div style={{ textAlign: 'center', paddingTop: '40px' }}>
               <p style={{ fontSize: '2.5rem', marginBottom: '12px' }}>🛒</p>
               <p style={{ color: '#888' }}>הסל ריק</p>
@@ -160,12 +138,9 @@ export default function CartSidebar({
           )}
         </div>
 
-        {/* Footer total */}
+        {/* Footer */}
         {items.length > 0 && (
-          <div style={{
-            padding: '20px 24px',
-            borderTop: '1px solid #e8e4dc',
-          }}>
+          <div style={{ padding: '20px 24px', borderTop: '1px solid #e8e4dc' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
               <span style={{ fontWeight: 600 }}>סה&quot;כ</span>
               <span style={{ fontFamily: "'Frank Ruhl Libre', serif", fontSize: '1.2rem', fontWeight: 700, color: '#c9a84c' }}>
