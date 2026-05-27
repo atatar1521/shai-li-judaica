@@ -23,16 +23,24 @@ jest.mock('next/link', () => ({
 
 jest.mock('@/components/ProductForm', () => ({
   __esModule: true,
-  default: ({ initial }: { initial?: { name?: string } }) => (
-    <div data-testid="product-form">{initial?.name}</div>
+  default: ({ initial, categories }: { initial?: { name?: string }; categories?: string[] }) => (
+    <div data-testid="product-form" data-categories={JSON.stringify(categories)}>{initial?.name}</div>
   ),
 }))
 
-function setupProduct(product: object | null) {
-  mockFrom.mockReturnValue({
-    select: jest.fn().mockReturnThis(),
-    eq: jest.fn().mockReturnThis(),
-    single: jest.fn().mockResolvedValue({ data: product }),
+function setupProduct(product: object | null, categories: { name: string }[] = []) {
+  mockFrom.mockImplementation((table: string) => {
+    if (table === 'categories') {
+      return {
+        select: jest.fn().mockReturnThis(),
+        order: jest.fn().mockResolvedValue({ data: categories }),
+      }
+    }
+    return {
+      select: jest.fn().mockReturnThis(),
+      eq: jest.fn().mockReturnThis(),
+      single: jest.fn().mockResolvedValue({ data: product }),
+    }
   })
 }
 
@@ -69,5 +77,14 @@ describe('EditProductPage', () => {
     const result = await EditProductPage({ searchParams: Promise.resolve({ id: 'p1' }) })
     render(result as React.ReactElement)
     expect(screen.getByRole('link', { name: /חזרה/ })).toHaveAttribute('href', '/admin')
+  })
+
+  it('passes fetched categories to ProductForm', async () => {
+    const product = { id: 'p1', name: 'מזוזה', price: 120, description: null, category: null, badge: null, in_stock: true, image_url: null }
+    setupProduct(product, [{ name: 'חנוכיות' }, { name: 'מזוזות' }])
+    const result = await EditProductPage({ searchParams: Promise.resolve({ id: 'p1' }) })
+    render(result as React.ReactElement)
+    const form = screen.getByTestId('product-form')
+    expect(JSON.parse(form.getAttribute('data-categories')!)).toEqual(['חנוכיות', 'מזוזות'])
   })
 })

@@ -36,11 +36,19 @@ jest.mock('@/components/ProductCard', () => ({
   ),
 }))
 
-function setupProducts(products: object[] | null) {
-  mockFrom.mockReturnValue({
-    select: jest.fn().mockReturnThis(),
-    eq: jest.fn().mockReturnThis(),
-    order: jest.fn().mockResolvedValue({ data: products }),
+function setupMocks(products: object[] | null, categories: { name: string }[] | null) {
+  mockFrom.mockImplementation((table: string) => {
+    if (table === 'categories') {
+      return {
+        select: jest.fn().mockReturnThis(),
+        order: jest.fn().mockResolvedValue({ data: categories }),
+      }
+    }
+    return {
+      select: jest.fn().mockReturnThis(),
+      eq: jest.fn().mockReturnThis(),
+      order: jest.fn().mockResolvedValue({ data: products }),
+    }
   })
 }
 
@@ -48,7 +56,7 @@ describe('Home page', () => {
   beforeEach(() => jest.clearAllMocks())
 
   it('renders Nav, Hero, TrustBar, and Footer', async () => {
-    setupProducts([])
+    setupMocks([], [])
     const result = await Home()
     render(result as React.ReactElement)
     expect(screen.getByTestId('nav')).toBeInTheDocument()
@@ -57,30 +65,41 @@ describe('Home page', () => {
     expect(screen.getByTestId('footer')).toBeInTheDocument()
   })
 
-  it('shows all 6 category cards', async () => {
-    setupProducts([])
+  it('renders category cards from the database', async () => {
+    setupMocks([], [
+      { name: 'חנוכיות' },
+      { name: 'מזוזות' },
+      { name: 'תכשיטים' },
+      { name: 'שבת וחגים' },
+      { name: 'אמנות לבית' },
+      { name: 'מתנות' },
+    ])
     const result = await Home()
     render(result as React.ReactElement)
     expect(screen.getByText('חנוכיות')).toBeInTheDocument()
     expect(screen.getByText('מזוזות')).toBeInTheDocument()
-    expect(screen.getByText('תכשיטים')).toBeInTheDocument()
     expect(screen.getByText('שבת וחגים')).toBeInTheDocument()
-    expect(screen.getByText('אמנות לבית')).toBeInTheDocument()
-    expect(screen.getByText('מתנות מיוחדות')).toBeInTheDocument()
+  })
+
+  it('renders no category cards when categories are empty', async () => {
+    setupMocks([], [])
+    const result = await Home()
+    render(result as React.ReactElement)
+    expect(screen.queryByRole('link', { name: /חנוכיות/ })).not.toBeInTheDocument()
   })
 
   it('shows empty products state when there are no products', async () => {
-    setupProducts([])
+    setupMocks([], [])
     const result = await Home()
     render(result as React.ReactElement)
     expect(screen.getByText('המוצרים יתווספו בקרוב')).toBeInTheDocument()
   })
 
   it('renders a ProductCard for each product', async () => {
-    setupProducts([
+    setupMocks([
       { id: 'p1', name: 'מזוזה', price: 120, description: null, category: null, image_url: null, badge: null, in_stock: true },
       { id: 'p2', name: 'חנוכייה', price: 250, description: null, category: null, image_url: null, badge: null, in_stock: true },
-    ])
+    ], [])
     const result = await Home()
     render(result as React.ReactElement)
     expect(screen.getAllByTestId('product-card')).toHaveLength(2)
@@ -89,14 +108,14 @@ describe('Home page', () => {
   })
 
   it('renders the about section', async () => {
-    setupProducts([])
+    setupMocks([], [])
     const result = await Home()
     render(result as React.ReactElement)
     expect(screen.getByText(/שנים של אהבה/)).toBeInTheDocument()
   })
 
   it('renders the CTA contact section', async () => {
-    setupProducts([])
+    setupMocks([], [])
     const result = await Home()
     render(result as React.ReactElement)
     expect(screen.getByText(/מחפשים מתנה מיוחדת/)).toBeInTheDocument()

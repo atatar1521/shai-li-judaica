@@ -1,7 +1,12 @@
+import { createClient } from '@/lib/supabase/server'
 import ProductForm from '@/components/ProductForm'
 import Link from 'next/link'
 
-export default function NewProductPage() {
+export default async function NewProductPage() {
+  const supabase = await createClient()
+  const { data: cats } = await supabase.from('categories').select('name').order('display_order')
+  const categories = cats?.map(c => c.name) ?? []
+
   return (
     <div>
       <div style={{ marginBottom: '28px' }}>
@@ -14,7 +19,7 @@ export default function NewProductPage() {
       </div>
 
       <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #e8e4dc', padding: '32px' }}>
-        <ProductForm />
+        <ProductForm categories={categories} />
       </div>
     </div>
   )

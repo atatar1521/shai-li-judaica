@@ -15,9 +15,7 @@ type ProductData = {
   image_url: string
 }
 
-const CATEGORIES = ['חנוכיות', 'מזוזות', 'תכשיטים', 'שבת וחגים', 'אמנות לבית', 'מתנות']
-
-export default function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
+export default function ProductForm({ initial, categories = [] }: { initial?: Partial<ProductData>; categories?: string[] }) {
   const router = useRouter()
   const supabase = createClient()
   const isEdit = !!initial?.id
@@ -142,7 +140,7 @@ export default function ProductForm({ initial }: { initial?: Partial<ProductData
             <label style={labelStyle}>קטגוריה</label>
             <select value={form.category} onChange={e => set('category', e.target.value)} style={inputStyle}>
               <option value="">בחרו קטגוריה</option>
-              {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+              {categories.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
         </div>
